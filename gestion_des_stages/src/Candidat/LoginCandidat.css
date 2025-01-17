@@ -1,0 +1,170 @@
+.login-containerr {
+    height: 100vh;
+    width: 100vw; /* Change width to 100vw */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../images/stage 2.jpg');
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.form-wrapperr {
+    padding: 2rem;
+    border-radius: 15px; /* Augmenter le rayon de bordure pour des coins plus arrondis */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Adoucir l'ombre pour un effet plus subtil */
+    width: 100%;
+    max-width: 450px; /* Augmenter la largeur maximale pour plus d'espace */
+    background-color: rgba(255, 255, 255, 0.8); /* Couleur de fond blanche semi-transparente */
+    backdrop-filter: blur(10px); /* Ajouter un effet de flou pour un look plus professionnel */
+    border: 1px solid rgba(224, 224, 224, 0.8); /* Ajouter une bordure légère et semi-transparente */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Ajouter des transitions pour les effets de survol */
+    position: relative; /* Position relative pour s'assurer que le flou de fond ne l'affecte pas */
+    z-index: 1; /* Assurez-vous que le formulaire est au-dessus du fond flou */
+}
+
+.form-wrapperr:hover {
+    transform: translateY(-5px); /* Légère translation vers le haut au survol */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Augmenter l'ombre au survol */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.input-groupp {
+    position: relative; /* Position relative pour positionner les icônes */
+    margin-bottom: 1rem;
+}
+
+.input-groupp label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.input-groupp input {
+    width: 100%;
+    padding: 0.8rem 1rem 0.8rem 2.5rem; /* Ajouter de l'espace à gauche pour les icônes */
+    border: 1px solid #ccc;
+    border-radius: 16px;
+    font-size: 18px;
+    background-color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.input-groupp input:focus {
+    border-color: #4c72af;
+    box-shadow: 0 0 5px 4c72af(76, 175, 80, 0.5);
+    outline: none;
+}
+
+.input-groupp .icon {
+    position: absolute;
+    top: 69%;
+    left: 10px; /* Positionner l'icône à gauche */
+    transform: translateY(-50%);
+    color: #4c72af; /* Couleur de l'icône */
+    pointer-events: none; /* Empêcher l'icône d'interférer avec les clics */
+}
+
+
+.submit-btnn {
+    background-color: #4c72af; /* Couleur de fond plus vive */
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 25px; /* Bordures plus arrondies */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 1rem;
+    transition: background-color 0.3s, transform 0.3s; /* Ajouter des transitions pour les effets de survol */
+}
+
+.submit-btnn:hover {
+    background-color: #4c72af; /* Changer la couleur de fond au survol */
+    transform: translateY(-2px); /* Légère translation vers le haut au survol */
+}
+
+.submit-btnn:active {
+    background-color: #4c72af; /* Couleur de fond au clic */
+    transform: translateY(0); /* Réinitialiser la translation au clic */
+}
+
+.forgot-password,
+.register-link {
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 14px;
+    color: #999;
+}
+
+.toggle-form p {
+    margin-top: 1rem;
+    font-size: 14px;
+    color: #999;
+}
+
+.toggle-form span {
+    cursor: pointer;
+    text-decoration: underline;
+    color: #4c72af;
+}
+
+.arrow-buttonn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 20px;
+    color: #4c72af;
+    text-decoration: none;
+    background-color: white; /* Ajouter une couleur de fond */
+    border-radius: 50%; /* Rendre le bouton circulaire */
+    width: 40px; /* Définir la largeur */
+    height: 40px; /* Définir la hauteur */
+    display: flex; /* Utiliser flexbox pour centrer le contenu */
+    align-items: center; /* Centrer verticalement */
+    justify-content: center; /* Centrer horizontalement */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Ajouter une ombre */
+    transition: color 0.3s, background-color 0.3s; /* Ajouter des transitions pour les effets de survol */
+}
+
+.arrow-buttonn:hover {
+    color: white; /* Changer la couleur du texte au survol */
+    background-color: #4c72af; /* Changer la couleur de fond au survol */
+}
+
+.special-title {
+    font-size: 2.5rem; /* Taille de police plus grande */
+    color: #4CAF50; /* Couleur de texte spéciale */
+    text-align: center; /* Centrer le texte */
+    margin-bottom: 1.5rem; /* Espace en bas */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Ajouter une ombre au texte */
+    font-weight: bold; /* Texte en gras */
+    letter-spacing: 1px; /* Espacement des lettres */
+    background: linear-gradient(to right, #6e8efb, #5d88d7); /* Dégradé de fond */
+    background-clip: text; /* Utiliser le dégradé comme couleur de texte */
+    -webkit-background-clip: text; /* Utiliser le dégradé comme couleur de texte */
+    -webkit-text-fill-color: transparent; /* Rendre le texte transparent pour afficher le dégradé */
+}

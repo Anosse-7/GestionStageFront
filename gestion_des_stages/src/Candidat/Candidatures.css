@@ -1,0 +1,126 @@
+/* Conteneur principal */
+.page-container {
+    display: flex;
+    font-family: Arial, sans-serif;
+    min-height: 100vh; /* Pour occuper toute la hauteur de la fenêtre */
+}
+
+/* Drawer (menu latéral) */
+.drawer {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.drawer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.drawer ul li {
+    margin: 15px 0;
+}
+
+.drawer ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.drawer ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Contenu principal */
+.content {
+    flex-grow: 1;
+    display: flex; /* Active Flexbox */
+    flex-direction: column; /* Aligne les éléments verticalement */
+    justify-content: center; /* Centre verticalement */
+    align-items: center; /* Centre horizontalement */
+    padding: 50px;
+    margin-left: 270px; /* Ajuste pour ne pas chevaucher le drawer */
+    min-height: 100vh; /* Assure une hauteur suffisante */   
+    background-image: linear-gradient(to right, #3a3aa7, #4c72af);
+    }
+
+
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.application-form {
+    width: 100%;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group:nth-child(7),
+.form-group:nth-child(8) {
+    grid-column: span 2;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input, select, textarea {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+textarea {
+    resize: none;
+    height: 100px;
+}
+
+.submit-btn {
+    grid-column: span 2;
+    background-color: #2935b8;
+    color: white;
+    padding: 10px;
+    font-size: 18px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background-color: #7e84b4;
+}
+
+.error-message {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 10px;
+    grid-column: span 2;
+}
+
+.success-message {
+    color: #121e88;
+    text-align: center;
+    margin-bottom: 10px;
+    grid-column: span 2;
+}

@@ -1,0 +1,142 @@
+.page-container {
+    display: flex;
+    font-family: Arial, sans-serif;
+}
+
+.drawer {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    padding: 20px;
+    min-height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+.drawer ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.drawer ul li {
+    margin: 15px 0;
+}
+
+.drawer ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+.drawer ul li a:hover {
+    color: #007bff;
+}
+.contentt {
+    flex-grow: 1;
+    padding: 50px;
+    margin-left: 250px; /* Correspond à la largeur du menu latéral */
+    background-image: linear-gradient(to right, #3a3aa7, #4c72af);
+}
+
+.content h1 {
+    color: #2c3e50;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+}
+
+thead th {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #2c3e50;
+    border-bottom: 2px solid #dee2e6;
+}
+
+tbody td {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    color: #2c3e50;
+}
+
+.progress-bar {
+    background-color: #e9ecef;
+    border-radius: 4px;
+    height: 20px;
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background-color: #007bff;
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+.progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    text-align: center;
+    display: inline-block;
+    min-width: 100px;
+}
+
+.status-badge.en-cours {
+    background-color: #ffd700;
+    color: #000;
+}
+
+.status-badge.validé {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-badge.non-validé {
+    background-color: #dc3545;
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+    
+    .drawer {
+        display: none;
+    }
+    
+    table {
+        font-size: 0.875rem;
+    }
+    
+    td, th {
+        padding: 0.75rem;
+    }
+}
