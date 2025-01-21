@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './LoginAdmin.css'; // Vous pouvez ajouter une feuille de style distincte si nécessaire.
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const LoginAdmin = () => {
     const [isLogin, setIsLogin] = useState(true); // Permet de basculer entre connexion et inscription
@@ -11,6 +12,8 @@ const LoginAdmin = () => {
         lastName: '',
         confirmPassword: '', // Ce champ n'est utilisé que lors de l'inscription
     });
+
+    const navigate = useNavigate();
 
     const toggleForm = () => {
         setIsLogin(!isLogin); // Inverse la vue
@@ -28,7 +31,7 @@ const LoginAdmin = () => {
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         if (!isLogin && formData.password !== formData.confirmPassword) {
@@ -36,7 +39,47 @@ const LoginAdmin = () => {
             return;
         }
 
-        console.log(isLogin ? "Données de connexion Admin :" : "Données d'inscription Admin :", formData);
+        if (!isLogin) {
+            // Registration logic
+            try {
+                const response = await axios.post('http://localhost:8080/api/admin/register', {
+                    nom: formData.lastName,
+                    prenom: formData.firstName,
+                    email: formData.email,
+                    password: formData.password,
+                });
+
+                if (response.status === 200) {
+                    alert(`Registration successful: ${response.data}`);
+                } else {
+                    alert('Registration failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during registration');
+            }
+        } else {
+            // Login logic
+            try {
+                const response = await axios.post('http://localhost:8080/login', {
+                    email: formData.email,
+                    password: formData.password,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.status === 200) {
+                    navigate(response.data);
+                } else {
+                    alert('Login failed');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred during login');
+            }
+        }
     };
 
     return (

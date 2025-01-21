@@ -1,23 +1,49 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './RoleComptes.css';
 
-const StagiairesComptes = ({ accounts }) => {
-    const [stagiairesAccounts, setStagiairesAccounts] = useState(accounts.filter(account => account.role === 'Stagiaires'));
+const StagiairesComptes = () => {
+    const [stagiairesAccounts, setStagiairesAccounts] = useState([]);
 
-    const handleEdit = (index) => {
+    useEffect(() => {
+        // Fetch stagiaire accounts from the backend
+        const fetchStagiairesAccounts = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/admin/stagiaires');
+                setStagiairesAccounts(response.data);
+            } catch (error) {
+                console.error('Error fetching stagiaire accounts:', error);
+            }
+        };
+
+        fetchStagiairesAccounts();
+    }, []);
+
+    const handleEdit = async (index) => {
         const newPassword = prompt("Entrez le nouveau mot de passe:");
         if (newPassword) {
-            const updatedAccounts = [...stagiairesAccounts];
-            updatedAccounts[index].password = newPassword;
-            setStagiairesAccounts(updatedAccounts);
+            try {
+                const updatedAccount = { ...stagiairesAccounts[index], password: newPassword };
+                await axios.put(`http://localhost:8080/api/admin/stagiaires/${updatedAccount.id}`, updatedAccount);
+                const updatedAccounts = [...stagiairesAccounts];
+                updatedAccounts[index] = updatedAccount;
+                setStagiairesAccounts(updatedAccounts);
+            } catch (error) {
+                console.error('Error updating password:', error);
+            }
         }
     };
 
-    const handleDelete = (index) => {
-        const updatedAccounts = stagiairesAccounts.filter((_, i) => i !== index);
-        setStagiairesAccounts(updatedAccounts);
+    const handleDelete = async (index) => {
+        try {
+            const accountId = stagiairesAccounts[index].id;
+            await axios.delete(`http://localhost:8080/api/admin/stagiaires/${accountId}`);
+            const updatedAccounts = stagiairesAccounts.filter((_, i) => i !== index);
+            setStagiairesAccounts(updatedAccounts);
+        } catch (error) {
+            console.error('Error deleting account:', error);
+        }
     };
 
     return (
@@ -58,14 +84,6 @@ const StagiairesComptes = ({ accounts }) => {
             </div>
         </div>
     );
-};
-
-StagiairesComptes.propTypes = {
-    accounts: PropTypes.arrayOf(PropTypes.shape({
-        email: PropTypes.string.isRequired,
-        password: PropTypes.string.isRequired,
-        role: PropTypes.string.isRequired,
-    })).isRequired,
 };
 
 export default StagiairesComptes;

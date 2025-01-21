@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './AdminPage.css';
 
 const AdminPage = ({ accounts, setAccounts }) => {
@@ -17,15 +18,37 @@ const AdminPage = ({ accounts, setAccounts }) => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.email && formData.password) {
-            if (Array.isArray(accounts)) {
-                setAccounts([...accounts, formData]);
-                setFormData({ email: '', password: '', role: '' });
-                alert('Compte créé avec succès !');
-            } else {
-                alert('Erreur: "accounts" n\'est pas un tableau');
+            try {
+                const role = formData.role.toUpperCase();
+                console.log(`Sending request to: http://localhost:8080/api/admin/add/${role}`);
+                const response = await axios.post(`http://localhost:8080/api/admin/add/${role}`, null, {
+                    params: {
+                        email: formData.email,
+                        password: formData.password,
+                        role: role,
+                    },
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    }
+                });
+
+                if (response.status === 200) {
+                    if (Array.isArray(accounts)) {
+                        setAccounts([...accounts, formData]);
+                        setFormData({ email: '', password: '', role: 'Encadrant' });
+                        alert('Compte créé avec succès !');
+                    } else {
+                        alert('Erreur: "accounts" n\'est pas un tableau');
+                    }
+                } else {
+                    alert('Échec de la création du compte');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Une erreur est survenue lors de la création du compte');
             }
         } else {
             alert('Veuillez remplir tous les champs !');
@@ -36,12 +59,11 @@ const AdminPage = ({ accounts, setAccounts }) => {
         <div className="admin-container">
             <nav className="drawer">
                 <ul>
-                <li><a href="/">Accueil</a></li>
-                <li><Link to="/AdminPage">Admin</Link></li>
-
+                    <li><a href="/">Accueil</a></li>
+                    <li><Link to="/AdminPage">Admin</Link></li>
                     <li><Link to="/EncadrantsComptes">Comptes - Encadrants</Link></li>
                     <li><Link to="/StagiairesComptes">Comptes - Stagiaires</Link></li>
-                    <li><Link to="/RHComptes">Comptes - RH</Link></li> 
+                    <li><Link to="/RHComptes">Comptes - RH</Link></li>
                 </ul>
             </nav>
 
@@ -69,14 +91,14 @@ const AdminPage = ({ accounts, setAccounts }) => {
                         />
                     </div>
                     <div>
-                        <label>Rôle:</label>
+                        <label>Role:</label>
                         <select
                             name="role"
                             value={formData.role}
                             onChange={handleChange}
                         >
-                            <option value="Encadrant">Encadrant</option>
-                            <option value="Stagiaires">Stagiaires</option>
+                            <option value="ENCADRANT">Encadrant</option>
+                            <option value="STAGIAIRE">Stagiaire</option>
                             <option value="RH">RH</option>
                         </select>
                     </div>

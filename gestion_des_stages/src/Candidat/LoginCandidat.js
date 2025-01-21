@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './LoginCandidat.css';
 import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 const LoginCandidat = () => {
     const [isLogin, setIsLogin] = useState(true); // Permet de basculer entre connexion et inscription
@@ -41,22 +42,15 @@ const LoginCandidat = () => {
         if (!isLogin) {
             // Registration logic
             try {
-                const response = await fetch('http://localhost:8080/api/condidat/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        nom: formData.nom,
-                        prenom: formData.prenom,
-                        email: formData.email,
-                        password: formData.password,
-                    }),
+                const response = await axios.post('http://localhost:8080/api/condidat/register', {
+                    nom: formData.nom,
+                    prenom: formData.prenom,
+                    email: formData.email,
+                    password: formData.password,
                 });
 
-                if (response.ok) {
-                    const data = await response.text();
-                    alert(`Registration successful: ${data}`);
+                if (response.status === 200) {
+                    alert(`Registration successful: ${response.data}`);
                 } else {
                     alert('Registration failed');
                 }
@@ -67,20 +61,17 @@ const LoginCandidat = () => {
         } else {
             // Login logic
             try {
-                const response = await fetch('http://localhost:8080/login', {
-                    method: 'POST',
+                const response = await axios.post('http://localhost:8080/login', {
+                    email: formData.email,
+                    password: formData.password,
+                }, {
                     headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        email: formData.email,
-                        password: formData.password,
-                    }),
+                        'Content-Type': 'application/json'
+                    }
                 });
-
-                if (response.ok) {
-                    const redirectUrl = await response.text();
-                    navigate(redirectUrl);
+    
+                if (response.status === 200) {
+                    navigate(response.data);
                 } else {
                     alert('Login failed');
                 }
