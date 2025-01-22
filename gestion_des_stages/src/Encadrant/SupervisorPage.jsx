@@ -1,32 +1,58 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './SupervisorPage.css';
 
-const SupervisorPage = ({ stagiaires, setStagiaires }) => {
-    useEffect(() => {
-        if (stagiaires.length === 0) {
-            // Simuler une récupération de données depuis une source externe
-            const initialData = [
-                { email: "yacoubiwail@gmail.com", sujet: "", statut: "En cours" },
-                { email: "testadd2@gmail.com", sujet: "", statut: "En cours" },
-                { email: "CharkiOuiam@gmail.com", sujet: "", statut: "En cours" },
-                { email: "tuhuhbit@gmail.com", sujet: "", statut: "En cours" },
-            ];
-            setStagiaires(initialData);
-        }
-    }, [stagiaires, setStagiaires]);
+const SupervisorPage = ({ encadrantId }) => {
+    const [stagiaires, setStagiaires] = useState([]);
 
-    const handleStatutChange = (index, newStatut) => {
-        const updatedStagiaires = [...stagiaires];
-        updatedStagiaires[index].statut = newStatut;
-        setStagiaires(updatedStagiaires);
+    useEffect(() => {
+        // Fetch all stagiaire accounts for the encadrant
+        const fetchStagiaires = async () => {
+            try {
+                const response = await axios.get(`http://localhost:8080/api/encadrant/getCondidats/${encadrantId}`);
+                setStagiaires(response.data);
+            } catch (error) {
+                console.error('Error fetching stagiaire accounts:', error);
+            }
+        };
+
+        fetchStagiaires();
+    }, [encadrantId]);
+
+    const handleStatutChange = async (index, newStatut) => {
+        const updatedStagiaire = { ...stagiaires[index], statut: newStatut };
+        try {
+            const response = await axios.put(`http://localhost:8080/api/encadrant/updateCondidat/${updatedStagiaire.id}`, updatedStagiaire);
+            if (response.status === 200) {
+                const updatedStagiaires = [...stagiaires];
+                updatedStagiaires[index] = response.data;
+                setStagiaires(updatedStagiaires);
+            } else {
+                alert('Failed to update stagiaire');
+            }
+        } catch (error) {
+            console.error('Error updating stagiaire:', error);
+            alert('An error occurred during stagiaire update');
+        }
     };
 
-    const handleSujetChange = (index, newSujet) => {
-        const updatedStagiaires = [...stagiaires];
-        updatedStagiaires[index].sujet = newSujet;
-        setStagiaires(updatedStagiaires);
+    const handleSujetChange = async (index, newSujet) => {
+        const updatedStagiaire = { ...stagiaires[index], sujet: newSujet };
+        try {
+            const response = await axios.put(`http://localhost:8080/api/encadrant/updateCondidat/${updatedStagiaire.id}`, updatedStagiaire);
+            if (response.status === 200) {
+                const updatedStagiaires = [...stagiaires];
+                updatedStagiaires[index] = response.data;
+                setStagiaires(updatedStagiaires);
+            } else {
+                alert('Failed to update stagiaire');
+            }
+        } catch (error) {
+            console.error('Error updating stagiaire:', error);
+            alert('An error occurred during stagiaire update');
+        }
     };
 
     return (
@@ -78,12 +104,7 @@ const SupervisorPage = ({ stagiaires, setStagiaires }) => {
 };
 
 SupervisorPage.propTypes = {
-    stagiaires: PropTypes.arrayOf(PropTypes.shape({
-        email: PropTypes.string.isRequired,
-        sujet: PropTypes.string,
-        statut: PropTypes.string.isRequired,
-    })).isRequired,
-    setStagiaires: PropTypes.func.isRequired,
+    encadrantId: PropTypes.number.isRequired,
 };
 
 export default SupervisorPage;

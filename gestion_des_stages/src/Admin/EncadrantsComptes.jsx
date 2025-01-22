@@ -1,23 +1,60 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import './RoleComptes.css';
 
-const EncadrantsComptes = ({ accounts }) => {
-    const [encadrantAccounts, setEncadrantAccounts] = useState(accounts.filter(account => account.role === 'Encadrant'));
+const EncadrantsComptes = () => {
+    const [encadrantAccounts, setEncadrantAccounts] = useState([]);
 
-    const handleEdit = (index) => {
+    useEffect(() => {
+        // Fetch all encadrant accounts
+        const fetchEncadrants = async () => {
+            try {
+                const response = await axios.get('http://localhost:8080/api/admin/encadrants');
+                setEncadrantAccounts(response.data);
+            } catch (error) {
+                console.error('Error fetching encadrant accounts:', error);
+            }
+        };
+
+        fetchEncadrants();
+    }, []);
+
+    const handleEdit = async (index) => {
         const newPassword = prompt("Entrez le nouveau mot de passe:");
         if (newPassword) {
-            const updatedAccounts = [...encadrantAccounts];
-            updatedAccounts[index].password = newPassword;
-            setEncadrantAccounts(updatedAccounts);
+            const updatedAccount = { ...encadrantAccounts[index], password: newPassword };
+            try {
+                const response = await axios.put(`http://localhost:8080/api/admin/encadrants/${updatedAccount.id}`, updatedAccount);
+                if (response.status === 200) {
+                    const updatedAccounts = [...encadrantAccounts];
+                    updatedAccounts[index] = response.data;
+                    setEncadrantAccounts(updatedAccounts);
+                } else {
+                    alert('Failed to update account');
+                }
+            } catch (error) {
+                console.error('Error updating account:', error);
+                alert('An error occurred during account update');
+            }
         }
     };
 
-    const handleDelete = (index) => {
-        const updatedAccounts = encadrantAccounts.filter((_, i) => i !== index);
-        setEncadrantAccounts(updatedAccounts);
+    const handleDelete = async (index) => {
+        const accountId = encadrantAccounts[index].id;
+        try {
+            const response = await axios.delete(`http://localhost:8080/api/admin/encadrants/${accountId}`);
+            if (response.status === 204) {
+                const updatedAccounts = encadrantAccounts.filter((_, i) => i !== index);
+                setEncadrantAccounts(updatedAccounts);
+            } else {
+                alert('Failed to delete account');
+            }
+        } catch (error) {
+            console.error('Error deleting account:', error);
+            alert('An error occurred during account deletion');
+        }
     };
 
     return (

@@ -31,7 +31,7 @@ const AdminPage = ({ accounts, setAccounts }) => {
                         role: role,
                     },
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
+                        'Content-Type': ''
                     }
                 });
 
