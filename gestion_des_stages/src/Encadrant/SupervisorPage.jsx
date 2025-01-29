@@ -1,51 +1,68 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './SupervisorPage.css';
 
-const SupervisorPage = ({ encadrantId }) => {
+const SupervisorPage = () => {
     const [stagiaires, setStagiaires] = useState([]);
+    const [updatedStagiaires, setUpdatedStagiaires] = useState([]);
 
     useEffect(() => {
-        // Fetch all stagiaire accounts for the encadrant
         const fetchStagiaires = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/api/encadrant/getCondidats/${encadrantId}`);
-                setStagiaires(response.data);
+                const response = await axios.get('http://localhost:8080/api/encadrant/stagiaires');
+                const sanitizedData = response.data.map(stagiaire => ({
+                    ...stagiaire,
+                    id: stagiaire.id || 'N/A', // Likely inherited from User class
+                    statut: stagiaire.statut || 'En cours', // Matches Status statut
+                    nom: stagiaire.nom || 'N/A', // Likely inherited from User class
+                    prenom: stagiaire.prenom || 'N/A', // Likely inherited from User class
+                    sujet: stagiaire.sujet || 'N/A', // Matches String sujet
+                }));
+                console.log('Fetched stagiaires:', sanitizedData);
+                setStagiaires(sanitizedData);
+                setUpdatedStagiaires(sanitizedData);
             } catch (error) {
                 console.error('Error fetching stagiaire accounts:', error);
             }
         };
 
         fetchStagiaires();
-    }, [encadrantId]);
+    }, []);
 
-    const handleStatutChange = async (index, newStatut) => {
-        const updatedStagiaire = { ...stagiaires[index], statut: newStatut };
-        try {
-            const response = await axios.put(`http://localhost:8080/api/encadrant/updateCondidat/${updatedStagiaire.id}`, updatedStagiaire);
-            if (response.status === 200) {
-                const updatedStagiaires = [...stagiaires];
-                updatedStagiaires[index] = response.data;
-                setStagiaires(updatedStagiaires);
-            } else {
-                alert('Failed to update stagiaire');
-            }
-        } catch (error) {
-            console.error('Error updating stagiaire:', error);
-            alert('An error occurred during stagiaire update');
-        }
+    const handleStatutChange = (index, newStatut) => {
+        const updatedStagiaire = { ...updatedStagiaires[index], statut: newStatut };
+        const newUpdatedStagiaires = [...updatedStagiaires];
+        newUpdatedStagiaires[index] = updatedStagiaire;
+        setUpdatedStagiaires(newUpdatedStagiaires);
     };
 
-    const handleSujetChange = async (index, newSujet) => {
-        const updatedStagiaire = { ...stagiaires[index], sujet: newSujet };
+    const handleSujetChange = (index, newSujet) => {
+        const updatedStagiaire = { ...updatedStagiaires[index], sujet: newSujet };
+        const newUpdatedStagiaires = [...updatedStagiaires];
+        newUpdatedStagiaires[index] = updatedStagiaire;
+        setUpdatedStagiaires(newUpdatedStagiaires);
+    };
+
+    const handleSubmit = async (index) => {
+        const updatedStagiaire = updatedStagiaires[index];
+
+        // Validate the updated data
+        if (!updatedStagiaire.id || !updatedStagiaire.statut || !updatedStagiaire.sujet) {
+            console.error('Invalid stagiaire data:', updatedStagiaire);
+            alert('Invalid stagiaire data. Please check the inputs.');
+            return;
+        }
+
+        console.log('Updating stagiaire:', updatedStagiaire);
+
         try {
-            const response = await axios.put(`http://localhost:8080/api/encadrant/updateCondidat/${updatedStagiaire.id}`, updatedStagiaire);
+            const response = await axios.put(`http://localhost:8080/api/encadrant/stagiaire/update/${updatedStagiaire.id}`, updatedStagiaire);
             if (response.status === 200) {
-                const updatedStagiaires = [...stagiaires];
-                updatedStagiaires[index] = response.data;
-                setStagiaires(updatedStagiaires);
+                const newStagiaires = [...stagiaires];
+                newStagiaires[index] = response.data;
+                setStagiaires(newStagiaires);
+                alert('Stagiaire updated successfully');
             } else {
                 alert('Failed to update stagiaire');
             }
@@ -71,6 +88,7 @@ const SupervisorPage = ({ encadrantId }) => {
                             <th>Email du Stagiaire</th>
                             <th>Sujet</th>
                             <th>Statut</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,19 +98,22 @@ const SupervisorPage = ({ encadrantId }) => {
                                 <td>
                                     <input
                                         type="text"
-                                        value={stagiaire.sujet}
+                                        value={updatedStagiaires[index].sujet}
                                         onChange={(e) => handleSujetChange(index, e.target.value)}
                                     />
                                 </td>
                                 <td>
                                     <select
-                                        value={stagiaire.statut}
+                                        value={updatedStagiaires[index].statut}
                                         onChange={(e) => handleStatutChange(index, e.target.value)}
                                     >
-                                        <option value="En cours">En cours</option>
-                                        <option value="Validé">Validé</option>
-                                        <option value="Non validé">Non validé</option>
+                                        <option value="EnCour">En cours</option>
+                                        <option value="Terminer">Validé</option>
+                                        <option value="Annuler">Non validé</option>
                                     </select>
+                                </td>
+                                <td>
+                                    <button onClick={() => handleSubmit(index)}>Submit</button>
                                 </td>
                             </tr>
                         ))}
@@ -101,10 +122,6 @@ const SupervisorPage = ({ encadrantId }) => {
             </div>
         </div>
     );
-};
-
-SupervisorPage.propTypes = {
-    encadrantId: PropTypes.number.isRequired,
 };
 
 export default SupervisorPage;

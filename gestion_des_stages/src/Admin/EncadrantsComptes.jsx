@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { Home, Users, UserCheck, UserPlus, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import './RoleComptes.css';
 
 const EncadrantsComptes = () => {
     const [encadrantAccounts, setEncadrantAccounts] = useState([]);
+    const [activeLink, setActiveLink] = useState('encadrants');
 
     useEffect(() => {
         // Fetch all encadrant accounts
@@ -57,6 +58,14 @@ const EncadrantsComptes = () => {
         }
     };
 
+    const sidebarLinks = [
+        { key: 'accueil', icon: Home, label: 'Accueil', path: '/' },
+        { key: 'admin', icon: Settings, label: 'Admin', path: '/AdminPage' },
+        { key: 'encadrants', icon: UserCheck, label: 'Comptes - Encadrants', path: '/EncadrantsComptes' },
+        { key: 'stagiaires', icon: Users, label: 'Comptes - Stagiaires', path: '/StagiairesComptes' },
+        { key: 'rh', icon: UserPlus, label: 'Comptes - RH', path: '/RHComptes' }
+    ];
+
     return (
         <div className="Page-container">
             <nav className="drawer">
@@ -95,14 +104,6 @@ const EncadrantsComptes = () => {
             </div>
         </div>
     );
-};
-
-EncadrantsComptes.propTypes = {
-    accounts: PropTypes.arrayOf(PropTypes.shape({
-        email: PropTypes.string.isRequired,
-        password: PropTypes.string.isRequired,
-        role: PropTypes.string.isRequired,
-    })).isRequired,
 };
 
 export default EncadrantsComptes;
