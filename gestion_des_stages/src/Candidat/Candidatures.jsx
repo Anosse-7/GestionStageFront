@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Candidatures.css';
+import axios from 'axios';
 
 const Candidatures = ({ demands, setDemands }) => {
     const [formData, setFormData] = useState({
@@ -8,7 +9,7 @@ const Candidatures = ({ demands, setDemands }) => {
         email: '',
         duree: '',
         description: '',
-        nCin: '',
+        CIN: '',
         cv: null,
     });
 
@@ -30,39 +31,63 @@ const Candidatures = ({ demands, setDemands }) => {
         setError('');
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        if (!formData.nom || !formData.prenom || !formData.email || !formData.duree || !formData.nCin || !formData.cv) {
+        if (!formData.nom || !formData.prenom || !formData.email || !formData.duree || !formData.CIN || !formData.cv) {
             setError('Tous les champs sont obligatoires.');
             return;
         }
 
-        const newDemand = {
-            id: demands.length + 1,
-            nom: formData.nom,
-            prenom: formData.prenom,
-            email: formData.email,
-            duree: formData.duree,
-            description: formData.description,
-            nCin: formData.nCin,
-            status: 'En attente',
-            cv: URL.createObjectURL(formData.cv),
-        };
+        const formDataToSend = new FormData();
+        formDataToSend.append('nom', formData.nom);
+        formDataToSend.append('prenom', formData.prenom);
+        formDataToSend.append('email', formData.email);
+        formDataToSend.append('duree', formData.duree);
+        formDataToSend.append('description', formData.description);
+        formDataToSend.append('CIN', formData.CIN);
+        formDataToSend.append('cv', formData.cv);
 
-        setDemands([...demands, newDemand]); // Mise à jour de l'état global
+        try {
+            const response = await axios.post('http://localhost:8080/api/condidat/demand', formDataToSend, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
-        setSuccess('Candidature soumise avec succès !');
-        setError('');
-        setFormData({
-            nom: '',
-            prenom: '',
-            email: '',
-            duree: '',
-            description: '',
-            nCin: '',
-            cv: null,
-        });
+            if (response.status === 200) {
+                const newDemand = {
+                    id: demands.length + 1,
+                    nom: formData.nom,
+                    prenom: formData.prenom,
+                    email: formData.email,
+                    duree: formData.duree,
+                    description: formData.description,
+                    CIN: formData.CIN,
+                    etat: 'enAttente',
+                    cv: URL.createObjectURL(formData.cv),
+                };
+
+                setDemands([...demands, newDemand]); // Mise à jour de l'état global
+
+                setSuccess('Candidature soumise avec succès !');
+                setError('');
+                setFormData({
+                    nom: '',
+                    prenom: '',
+                    email: '',
+                    duree: '',
+                    description: '',
+                    CIN: '',
+                    cv: null,
+                });
+            } else {
+                setError('Échec de la soumission de la candidature.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            setError('Une erreur est survenue lors de la soumission de la candidature.');
+        }
     };
 
     return (
@@ -114,8 +139,8 @@ const Candidatures = ({ demands, setDemands }) => {
                         <label>Numéro CIN :</label>
                         <input
                             type="text"
-                            name="nCin"
-                            value={formData.nCin}
+                            name="CIN"
+                            value={formData.CIN}
                             onChange={handleInputChange}
                             placeholder="Entrez votre numéro de CIN"
                         />
@@ -128,9 +153,9 @@ const Candidatures = ({ demands, setDemands }) => {
                             onChange={handleInputChange}
                         >
                             <option value="">Choisissez une durée</option>
-                            <option value="1 mois">1 mois</option>
-                            <option value="3 mois">3 mois</option>
-                            <option value="6 mois">6 mois</option>
+                            <option value="UneMois">1 mois</option>
+                            <option value="TroisMois">3 mois</option>
+                            <option value="SixMois">6 mois</option>
                         </select>
                     </div>
                     <div className="form-group">
