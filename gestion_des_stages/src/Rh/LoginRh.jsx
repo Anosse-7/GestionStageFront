@@ -32,7 +32,8 @@ const LoginRH = () => {
             console.log('Response:', response); // Log the response
 
             if (response.status === 200) {
-                const redirectUrl = response.data; // Assuming the redirect URL is in the response body
+                const { token, redirectUrl } = response.data; // Extract token and redirect URL from the response
+                localStorage.setItem('token', token); // Store the token in local storage
                 navigate(redirectUrl); // Redirect to the URL provided in the response
             } else {
                 setError('Login failed');

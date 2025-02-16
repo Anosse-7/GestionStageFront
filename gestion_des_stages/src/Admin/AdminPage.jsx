@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './AdminPage.css';
 
@@ -9,6 +9,7 @@ const AdminPage = ({ accounts, setAccounts }) => {
         password: '',
         role: 'Encadrant',
     });
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -28,18 +29,19 @@ const AdminPage = ({ accounts, setAccounts }) => {
                     params: {
                         email: formData.email,
                         password: formData.password,
-                        role: role,
                     },
                     headers: {
-                        'Content-Type': ''
+                        'Content-Type': 'application/json'
                     }
                 });
 
+                console.log('Response:', response); // Log the response
+
                 if (response.status === 200) {
+                    alert(response.data); // Show success message
                     if (Array.isArray(accounts)) {
                         setAccounts([...accounts, formData]);
                         setFormData({ email: '', password: '', role: 'Encadrant' });
-                        alert('Compte créé avec succès !');
                     } else {
                         alert('Erreur: "accounts" n\'est pas un tableau');
                     }
@@ -48,7 +50,11 @@ const AdminPage = ({ accounts, setAccounts }) => {
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Une erreur est survenue lors de la création du compte');
+                if (error.response && error.response.data) {
+                    alert(error.response.data); // Show error message from the backend
+                } else {
+                    alert('Une erreur est survenue lors de la création du compte');
+                }
             }
         } else {
             alert('Veuillez remplir tous les champs !');

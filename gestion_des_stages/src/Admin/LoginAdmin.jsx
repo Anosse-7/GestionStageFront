@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import './LoginAdmin.css'; // Vous pouvez ajouter une feuille de style distincte si nécessaire.
-import { Link, useNavigate } from "react-router-dom";
+import './LoginAdmin.css';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginAdmin = () => {
@@ -42,6 +42,7 @@ const LoginAdmin = () => {
         if (!isLogin) {
             // Registration logic
             try {
+                console.log('Registering with data:', formData); // Log the registration data
                 const response = await axios.post('http://localhost:8080/api/admin/register', {
                     nom: formData.lastName,
                     prenom: formData.firstName,
@@ -49,18 +50,21 @@ const LoginAdmin = () => {
                     password: formData.password,
                 });
 
+                console.log('Registration response:', response); // Log the registration response
+
                 if (response.status === 200) {
                     alert(`Registration successful: ${response.data}`);
                 } else {
                     alert('Registration failed');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error during registration:', error);
                 alert('An error occurred during registration');
             }
         } else {
             // Login logic
             try {
+                console.log('Logging in with data:', formData); // Log the login data
                 const response = await axios.post('http://localhost:8080/login', {
                     email: formData.email,
                     password: formData.password,
@@ -70,13 +74,17 @@ const LoginAdmin = () => {
                     }
                 });
 
+                console.log('Login response:', response); // Log the login response
+
                 if (response.status === 200) {
-                    navigate(response.data);
+                    const { token, redirectUrl } = response.data; // Extract token and redirect URL from the response
+                    localStorage.setItem('token', token); // Store the token in local storage
+                    navigate(redirectUrl); // Redirect to the URL provided in the response
                 } else {
                     alert('Login failed');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error during login:', error);
                 alert('An error occurred during login');
             }
         }
@@ -84,10 +92,9 @@ const LoginAdmin = () => {
 
     return (
         <div className="login-containerr">
-            <Link to="/" className="arrow-buttonn">←</Link>
-
+            <Link to="/" className="arrow-buttonn">&#8592;</Link>
             <div className="form-wrapperr">
-                <h1>{isLogin ? 'Connexion Admin' : 'Inscription Admin'}</h1>
+                <h1 className="special-title">{isLogin ? 'Connexion Admin' : 'Inscription Admin'}</h1>
                 <form onSubmit={handleSubmit}>
                     {!isLogin && (
                         <>
@@ -122,6 +129,7 @@ const LoginAdmin = () => {
                             onChange={handleChange}
                             required
                         />
+                        <i className="fas fa-envelope icon"></i> {/* Icône pour l'email */}
                     </div>
                     <div className="input-groupp">
                         <label>Mot de passe</label>
@@ -132,8 +140,8 @@ const LoginAdmin = () => {
                             onChange={handleChange}
                             required
                         />
+                        <i className="fas fa-lock icon"></i> {/* Icône pour le mot de passe */}
                     </div>
-
                     {!isLogin && (
                         <div className="input-groupp">
                             <label>Confirmer le mot de passe</label>
@@ -146,11 +154,9 @@ const LoginAdmin = () => {
                             />
                         </div>
                     )}
-
                     <button type="submit" className="submit-btnn">
                         {isLogin ? 'Se connecter' : 'S’inscrire'}
                     </button>
-
                     <div className="toggle-form">
                         <p>
                             {isLogin

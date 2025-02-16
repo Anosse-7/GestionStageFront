@@ -1,30 +1,93 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import axios from 'axios';
 import './AssignEncadrant.css';
 
-const AssignEncadrant = ({ accounts }) => {
-    // Filtrer les comptes pour les stagiaires et les encadrants
-    const stagiairesAccounts = accounts.filter(account => account.role === 'Stagiaires');
-    const encadrantAccounts = accounts.filter(account => account.role === 'Encadrant');
-
-    // État local pour gérer les assignations
+const AssignEncadrant = () => {
     const [assignments, setAssignments] = useState({});
+    const [stagiairesAccounts, setStagiairesAccounts] = useState([]);
+    const [encadrantAccounts, setEncadrantAccounts] = useState([]);
 
-    // Initialiser les assignations si nécessaire
     useEffect(() => {
-        const initialAssignments = {};
-        stagiairesAccounts.forEach(stagiaire => {
-            initialAssignments[stagiaire.email] = '';
-        });
-        setAssignments(initialAssignments);
-    }, [stagiairesAccounts]);
+        const fetchAccounts = async () => {
+            const token = localStorage.getItem('token'); // Retrieve the token from local storage
+            if (!token) {
+                console.error('No token found. Please log in.');
+                return;
+            }
 
-    // Fonction pour gérer l'assignation
-    const handleAssign = (stagiaireEmail, encadrantEmail) => {
-        setAssignments(prev => ({
-            ...prev,
-            [stagiaireEmail]: encadrantEmail,
-        }));
+            try {
+                const [stagiairesResponse, encadrantsResponse] = await Promise.all([
+                    axios.get('http://localhost:8080/api/rh/stagiaires', {
+                        headers: {
+                            'Authorization': `Bearer ${token}` // Include the token in the request headers
+                        }
+                    }),
+                    axios.get('http://localhost:8080/api/rh/encadrants', {
+                        headers: {
+                            'Authorization': `Bearer ${token}` // Include the token in the request headers
+                        }
+                    })
+                ]);
+
+                if (stagiairesResponse.status === 200 && encadrantsResponse.status === 200) {
+                    const filteredStagiaires = stagiairesResponse.data || [];
+                    const filteredEncadrants = encadrantsResponse.data || [];
+
+                    const initialAssignments = {};
+                    filteredStagiaires.forEach(stagiaire => {
+                        initialAssignments[stagiaire.email] = '';
+                    });
+
+                    setStagiairesAccounts(filteredStagiaires);
+                    setEncadrantAccounts(filteredEncadrants);
+                    setAssignments(initialAssignments);
+
+                    console.log('Fetched stagiaires:', filteredStagiaires); // Log the fetched stagiaires
+                    console.log('Fetched encadrants:', filteredEncadrants); // Log the fetched encadrants
+                } else {
+                    console.error('Failed to fetch accounts');
+                }
+            } catch (error) {
+                console.error('Error fetching accounts:', error);
+            }
+        };
+
+        fetchAccounts();
+    }, []);
+
+    const handleAssign = async (stagiaireEmail, encadrantEmail) => {
+        const stagiaire = stagiairesAccounts.find(account => account.email === stagiaireEmail);
+        const encadrant = encadrantAccounts.find(account => account.email === encadrantEmail);
+
+        if (stagiaire && encadrant) {
+            try {
+                const token = localStorage.getItem('token'); // Retrieve the token from local storage
+                const response = await axios.put('http://localhost:8080/api/rh/assignEncadrant', null, {
+                    params: {
+                        stagiaireId: stagiaire.id,
+                        encadrantId: encadrant.id,
+                    },
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Include the token in the request headers
+                    }
+                });
+
+                if (response.status === 200) {
+                    setAssignments(prev => ({
+                        ...prev,
+                        [stagiaireEmail]: encadrantEmail,
+                    }));
+                    alert(`Encadrant ${encadrantEmail} has been assigned to Stagiaire ${stagiaireEmail}`);
+                } else {
+                    alert('Failed to assign encadrant');
+                }
+            } catch (error) {
+                console.error('Error assigning encadrant:', error);
+                alert('An error occurred while assigning the encadrant');
+            }
+        } else {
+            alert('Invalid stagiaire or encadrant email');
+        }
     };
 
     return (
@@ -62,7 +125,7 @@ const AssignEncadrant = ({ accounts }) => {
                                         <option value="" disabled>
                                             Choisir un encadrant
                                         </option>
-                                        {encadrantAccounts.map((encadrant, idx) => (
+                                        {Array.isArray(encadrantAccounts) && encadrantAccounts.map((encadrant, idx) => (
                                             <option key={idx} value={encadrant.email}>
                                                 {encadrant.email}
                                             </option>
@@ -76,13 +139,6 @@ const AssignEncadrant = ({ accounts }) => {
             </div>
         </div>
     );
-};
-
-AssignEncadrant.propTypes = {
-    accounts: PropTypes.arrayOf(PropTypes.shape({
-        email: PropTypes.string.isRequired,
-        role: PropTypes.string.isRequired,
-    })).isRequired,
 };
 
 export default AssignEncadrant;
