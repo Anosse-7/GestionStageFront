@@ -18,6 +18,7 @@ const LoginEncadrant = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log('Submitting form with data:', formData); // Log the form data
         if (formData.email && formData.password) {
             try {
                 const response = await axios.post('http://localhost:8080/login', {
@@ -29,13 +30,17 @@ const LoginEncadrant = () => {
                     }
                 });
 
+                console.log('Login response:', response); // Log the login response
+
                 if (response.status === 200) {
-                    navigate(response.data); // Assuming the response contains the URL to navigate to
+                    const { token, redirectUrl } = response.data; // Extract token and redirect URL from the response
+                    localStorage.setItem('token', token); // Store the token in local storage
+                    navigate(redirectUrl); // Redirect to the URL provided in the response
                 } else {
                     alert('Échec de la connexion');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error during login:', error);
                 alert('Une erreur est survenue lors de la connexion');
             }
         } else {

@@ -49,9 +49,16 @@ const Candidatures = ({ demands, setDemands }) => {
         formDataToSend.append('cv', formData.cv);
 
         try {
+            const token = localStorage.getItem('token'); // Retrieve the token from local storage
+            if (!token) {
+                setError('No token found. Please log in.');
+                return;
+            }
+
             const response = await axios.post('http://localhost:8080/api/condidat/demand', formDataToSend, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}` // Include the token in the request headers
                 },
             });
 
@@ -164,7 +171,6 @@ const Candidatures = ({ demands, setDemands }) => {
                             type="file"
                             name="cv"
                             onChange={handleFileChange}
-                            accept="application/pdf"
                         />
                     </div>
                     <div className="form-group">
@@ -173,12 +179,10 @@ const Candidatures = ({ demands, setDemands }) => {
                             name="description"
                             value={formData.description}
                             onChange={handleInputChange}
-                            placeholder="Décrivez votre motivation"
-                        ></textarea>
+                            placeholder="Décrivez votre demande"
+                        />
                     </div>
-                    <button type="submit" className="submit-btn">
-                        Soumettre
-                    </button>
+                    <button type="submit" className="submit-btn">Soumettre</button>
                 </form>
             </div>
         </div>

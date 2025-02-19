@@ -1,21 +1,56 @@
 import React, { useState } from 'react';
 import './LoginStagiaires.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const LoginStagiaires = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
+    const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Données soumises :", formData);
+        console.log('Submitting form with data:', formData); // Log the form data
+
+        if (formData.email && formData.password) {
+            try {
+                const response = await axios.post('http://localhost:8080/login', {
+                    email: formData.email,
+                    password: formData.password,
+                }, {
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Login response:', response); // Log the login response
+
+                if (response.status === 200) {
+                    const { token, redirectUrl } = response.data; // Extract token and redirect URL from the response
+                    localStorage.setItem('token', token); // Store the token in local storage
+                    navigate(redirectUrl); // Redirect to the URL provided in the response
+                } else {
+                    setError('Échec de la connexion');
+                }
+            } catch (error) {
+                console.error('Error during login:', error);
+                if (error.response && error.response.data && error.response.data.error) {
+                    setError(error.response.data.error); // Show error message from the backend
+                } else {
+                    setError('Une erreur est survenue lors de la connexion');
+                }
+            }
+        } else {
+            setError('Veuillez remplir tous les champs !');
+        }
     };
 
     return (
@@ -46,6 +81,7 @@ const LoginStagiaires = () => {
                         />
                         <i className="fas fa-lock icon"></i> {/* Icône pour le mot de passe */}
                     </div>
+                    {error && <p className="error-message">{error}</p>}
                     <button type="submit" className="submit-btnn">
                         Se connecter
                     </button>

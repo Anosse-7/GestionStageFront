@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './LoginCandidat.css';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginCandidat = () => {
@@ -8,9 +8,9 @@ const LoginCandidat = () => {
     const [formData, setFormData] = useState({
         email: '',
         password: '',
-        confirmPassword: '',
-        nom: '',
-        prenom: '',
+        firstName: '',
+        lastName: '',
+        confirmPassword: '', // Ce champ n'est utilisé que lors de l'inscription
     });
 
     const navigate = useNavigate();
@@ -18,11 +18,11 @@ const LoginCandidat = () => {
     const toggleForm = () => {
         setIsLogin(!isLogin); // Inverse la vue
         setFormData({
-            email: "",
-            password: "",
-            confirmPassword: "",
-            nom: "",
-            prenom: "",
+            email: '',
+            password: '',
+            confirmPassword: '',
+            firstName: '',
+            lastName: '',
         });
     };
 
@@ -42,12 +42,15 @@ const LoginCandidat = () => {
         if (!isLogin) {
             // Registration logic
             try {
+                console.log('Registering with data:', formData); // Log the registration data
                 const response = await axios.post('http://localhost:8080/api/condidat/register', {
-                    nom: formData.nom,
-                    prenom: formData.prenom,
+                    nom: formData.lastName,
+                    prenom: formData.firstName,
                     email: formData.email,
                     password: formData.password,
                 });
+
+                console.log('Registration response:', response); // Log the registration response
 
                 if (response.status === 200) {
                     alert(`Registration successful: ${response.data}`);
@@ -55,12 +58,13 @@ const LoginCandidat = () => {
                     alert('Registration failed');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error during registration:', error);
                 alert('An error occurred during registration');
             }
         } else {
             // Login logic
             try {
+                console.log('Logging in with data:', formData); // Log the login data
                 const response = await axios.post('http://localhost:8080/login', {
                     email: formData.email,
                     password: formData.password,
@@ -69,14 +73,18 @@ const LoginCandidat = () => {
                         'Content-Type': 'application/json'
                     }
                 });
-    
+
+                console.log('Login response:', response); // Log the login response
+
                 if (response.status === 200) {
-                    navigate(response.data);
+                    const { token, redirectUrl } = response.data; // Extract token and redirect URL from the response
+                    localStorage.setItem('token', token); // Store the token in local storage
+                    navigate(redirectUrl); // Redirect to the URL provided in the response
                 } else {
                     alert('Login failed');
                 }
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error during login:', error);
                 alert('An error occurred during login');
             }
         }
@@ -84,10 +92,9 @@ const LoginCandidat = () => {
 
     return (
         <div className="login-containerr">
-            <Link to="/" className="arrow-buttonn">←</Link>
-
+            <Link to="/" className="arrow-buttonn">&#8592;</Link>
             <div className="form-wrapperr">
-                <h1>{isLogin ? 'Connexion Candidat' : 'Inscription Candidat'}</h1>
+                <h1 className="special-title">{isLogin ? 'Connexion Candidat' : 'Inscription Candidat'}</h1>
                 <form onSubmit={handleSubmit}>
                     {!isLogin && (
                         <>
@@ -95,8 +102,8 @@ const LoginCandidat = () => {
                                 <label>Prénom</label>
                                 <input
                                     type="text"
-                                    name="prenom"
-                                    value={formData.prenom}
+                                    name="firstName"
+                                    value={formData.firstName}
                                     onChange={handleChange}
                                     required
                                 />
@@ -105,8 +112,8 @@ const LoginCandidat = () => {
                                 <label>Nom</label>
                                 <input
                                     type="text"
-                                    name="nom"
-                                    value={formData.nom}
+                                    name="lastName"
+                                    value={formData.lastName}
                                     onChange={handleChange}
                                     required
                                 />
@@ -122,6 +129,7 @@ const LoginCandidat = () => {
                             onChange={handleChange}
                             required
                         />
+                        <i className="fas fa-envelope icon"></i> {/* Icône pour l'email */}
                     </div>
                     <div className="input-groupp">
                         <label>Mot de passe</label>
@@ -132,8 +140,8 @@ const LoginCandidat = () => {
                             onChange={handleChange}
                             required
                         />
+                        <i className="fas fa-lock icon"></i> {/* Icône pour le mot de passe */}
                     </div>
-
                     {!isLogin && (
                         <div className="input-groupp">
                             <label>Confirmer le mot de passe</label>
@@ -146,11 +154,9 @@ const LoginCandidat = () => {
                             />
                         </div>
                     )}
-
                     <button type="submit" className="submit-btnn">
                         {isLogin ? 'Se connecter' : 'S’inscrire'}
                     </button>
-
                     <div className="toggle-form">
                         <p>
                             {isLogin
