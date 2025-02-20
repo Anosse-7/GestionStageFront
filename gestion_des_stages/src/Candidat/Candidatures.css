@@ -8,7 +8,7 @@
 /* Drawer (menu latéral) */
 .drawer {
     width: 250px;
-    background-color: #343a40;
+    background-color: #4b4033;
     color: white;
     padding: 20px;
     min-height: 100vh;
@@ -46,7 +46,7 @@
     padding: 50px;
     margin-left: 270px; /* Ajuste pour ne pas chevaucher le drawer */
     min-height: 100vh; /* Assure une hauteur suffisante */   
-    background-image: linear-gradient(to right, #3a3aa7, #4c72af);
+    background-image: linear-gradient(to right, #B87333#a78e3a);
     }
 
 

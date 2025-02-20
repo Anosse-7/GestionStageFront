@@ -99,14 +99,14 @@ const Candidatures = ({ demands, setDemands }) => {
 
     return (
         <div className="page-container">
-            <nav className="drawer">
+           <nav className="drawer" style={{ width: '267px' , backgroundColor: '#4b4033'}}>
                 <ul>
                     <li><a href="/">Accueil</a></li>
                     <li><a href="/Candidatures">Candidature</a></li>
                 </ul>
             </nav>
 
-            <div className="content">
+            <div className="content" style={{ backgroundImage: 'linear-gradient(to right, #F5DEB3)' }}>
                 <h1>Formulaire de Candidature</h1>
                 {error && <p className="error-message">{error}</p>}
                 {success && <p className="success-message">{success}</p>}
@@ -170,6 +170,7 @@ const Candidatures = ({ demands, setDemands }) => {
                         <input
                             type="file"
                             name="cv"
+                            accept="application/pdf"
                             onChange={handleFileChange}
                         />
                     </div>

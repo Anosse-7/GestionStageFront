@@ -92,7 +92,7 @@ const AssignEncadrant = () => {
 
     return (
         <div className="Page-container">
-            <nav className="drawer">
+            <nav className="drawer" style={{ width: '267px', backgroundColor: '#4b4033' }}>
                 <ul>
                     <li><a href="/">Accueil</a></li>
                     <li><a href="/DemandsPage">Demandes</a></li>
@@ -102,7 +102,7 @@ const AssignEncadrant = () => {
                     <li><a href="/AssignEncadrant">Assignation</a></li>
                 </ul>
             </nav>
-            <div className="content">
+            <div className="content" style={{ backgroundImage: 'linear-gradient(to right, #F5DEB3)' }}>
                 <h1>Assignation d'Encadrants aux Stagiaires</h1>
                 <table>
                     <thead>

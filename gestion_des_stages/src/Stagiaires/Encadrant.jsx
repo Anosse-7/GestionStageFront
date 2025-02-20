@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 const Encadrant = ({ assignments }) => {
     return (
         <div className="Page-container">
-            <nav className="drawer">
+            <nav className="drawer" style={{ width: '267px', backgroundColor: '#4b4033' }}>
                 <ul>
                     <li><Link to="/">Accueil</Link></li>
                     <li><Link to="/Encadrant">Assignation</Link></li>

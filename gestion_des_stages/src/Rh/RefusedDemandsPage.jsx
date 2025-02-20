@@ -35,7 +35,7 @@ const RefusedDemandsPage = () => {
 
     return (
         <div className="page-container">
-            <nav className="drawer">
+            <nav className="drawer" style={{ width: '267px', backgroundColor: '#4b4033' }}>
                 <ul>
                     <li><a href="/">Accueil</a></li>
                     <li><a href="/DemandsPage">Demandes</a></li>
@@ -45,7 +45,7 @@ const RefusedDemandsPage = () => {
                     <li><a href="/AssignEncadrant">Assignation</a></li>
                 </ul>
             </nav>
-            <div className="content">
+            <div className="content" style={{ backgroundImage: 'linear-gradient(to right, #F5DEB3)' }}>
                 <h1>Demandes Refusées</h1>
                 <table>
                     <thead>

@@ -63,7 +63,7 @@ const AdminPage = ({ accounts, setAccounts }) => {
 
     return (
         <div className="admin-container">
-            <nav className="drawer">
+            <nav className="drawer" style={{ width: '267px', backgroundColor: '#4b4033' }}>
                 <ul>
                     <li><a href="/">Accueil</a></li>
                     <li><Link to="/AdminPage">Admin</Link></li>
@@ -73,7 +73,7 @@ const AdminPage = ({ accounts, setAccounts }) => {
                 </ul>
             </nav>
 
-            <div className="content">
+            <div className="content" style={{ backgroundImage: 'linear-gradient(to right, #F5DEB3)' }}>
                 <h1>Administration - Gestion des Comptes</h1>
                 <form onSubmit={handleSubmit} className="account-form">
                     <div>
@@ -114,5 +114,4 @@ const AdminPage = ({ accounts, setAccounts }) => {
         </div>
     );
 };
-
 export default AdminPage;

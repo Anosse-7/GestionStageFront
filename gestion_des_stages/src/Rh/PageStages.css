@@ -1,3 +1,7 @@
+body {
+    background-color: #F5DEB3;
+}
+
 .page-container {
     display: flex;
     font-family: Arial, sans-serif;
@@ -37,7 +41,7 @@
     flex-grow: 1;
     padding: 50px;
     margin-left: 250px; /* Correspond à la largeur du menu latéral */
-    background-image: linear-gradient(to right, #3a3aa7, #4c72af);
+    background-image: linear-gradient(to right, #F5DEB3);
 }
 
 .content h1 {

@@ -59,7 +59,7 @@ const RHComptes = () => {
 
     return (
         <div className="Page-container">
-            <nav className="drawer">
+           <nav className="drawer" style={{ width: '267px' , backgroundColor: '#4b4033'}}>    
                 <ul>
                     <li><Link to="/">Accueil</Link></li>
                     <li><Link to="/AdminPage">Admin</Link></li>
@@ -69,7 +69,7 @@ const RHComptes = () => {
                 </ul>
             </nav>
 
-            <div className="content">
+            <div className="content" style={{ backgroundImage: 'linear-gradient(to right, #F5DEB3)' }}>
                 <h1>Comptes - RH</h1>
                 <table>
                     <thead>

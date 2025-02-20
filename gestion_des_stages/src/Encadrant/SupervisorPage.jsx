@@ -74,13 +74,13 @@ const SupervisorPage = () => {
 
     return (
         <div className="Page-container">
-            <nav className="drawer">
+            <nav className="drawer" style={{ width: '267px' , backgroundColor: '#4b4033'}}>
                 <ul>
                     <li><Link to="/">Accueil</Link></li>
                     <li><Link to="/SupervisorPage">Supervision</Link></li>
                 </ul>
             </nav>
-            <div className="content">
+            <div className="content" style={{ backgroundImage: 'linear-gradient(to right, #F5DEB3)' }}>
                 <h1>Suivi des Stagiaires</h1>
                 <table>
                     <thead>

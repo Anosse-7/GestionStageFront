@@ -80,7 +80,7 @@ const DemandsPage = ({ setAcceptedDemands }) => {
 
     return (
         <div className="page-container">
-            <nav className="drawer">
+            <nav className="drawer" style={{ width: '267px', backgroundColor: '#4b4033' }}>
                 <ul>
                     <li><Link to="/">Accueil</Link></li>
                     <li><Link to="/DemandsPage">Demandes</Link></li>
@@ -90,7 +90,7 @@ const DemandsPage = ({ setAcceptedDemands }) => {
                     <li><a href="/AssignEncadrant">Assignation</a></li>
                 </ul>
             </nav>
-            <div className="contentt">
+            <div className="content" style={{ backgroundImage: 'linear-gradient(to right, #F5DEB3)' }}>
                 <h1 id="demandes">Liste des Demandes</h1>
                 <table>
                     <thead>
