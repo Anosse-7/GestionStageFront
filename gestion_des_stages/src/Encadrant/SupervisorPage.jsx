@@ -9,12 +9,22 @@ const SupervisorPage = () => {
 
     useEffect(() => {
         const fetchStagiaires = async () => {
+            const token = localStorage.getItem('token'); // Retrieve the token from local storage
+            if (!token) {
+                console.error('No token found. Please log in.');
+                return;
+            }
+
             try {
-                const response = await axios.get('http://localhost:8080/api/encadrant/stagiaires');
+                const response = await axios.get('http://localhost:8080/api/encadrant/stagiaires', {
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Include the token in the request headers
+                    }
+                });
                 const sanitizedData = response.data.map(stagiaire => ({
                     ...stagiaire,
                     id: stagiaire.id || 'N/A', // Likely inherited from User class
-                    statut: stagiaire.statut || 'En cours', // Matches Status statut
+                    statut: stagiaire.statut || 'EN_COURS', // Matches Status statut
                     nom: stagiaire.nom || 'N/A', // Likely inherited from User class
                     prenom: stagiaire.prenom || 'N/A', // Likely inherited from User class
                     sujet: stagiaire.sujet || 'N/A', // Matches String sujet
@@ -57,7 +67,17 @@ const SupervisorPage = () => {
         console.log('Updating stagiaire:', updatedStagiaire);
 
         try {
-            const response = await axios.put(`http://localhost:8080/api/encadrant/stagiaire/update/${updatedStagiaire.id}`, updatedStagiaire);
+            const token = localStorage.getItem('token'); // Retrieve the token from local storage
+            if (!token) {
+                console.error('No token found. Please log in.');
+                return;
+            }
+
+            const response = await axios.put(`http://localhost:8080/api/encadrant/stagiaire/update/${updatedStagiaire.id}`, updatedStagiaire, {
+                headers: {
+                    'Authorization': `Bearer ${token}` // Include the token in the request headers
+                }
+            });
             if (response.status === 200) {
                 const newStagiaires = [...stagiaires];
                 newStagiaires[index] = response.data;
@@ -107,9 +127,9 @@ const SupervisorPage = () => {
                                         value={updatedStagiaires[index].statut}
                                         onChange={(e) => handleStatutChange(index, e.target.value)}
                                     >
-                                        <option value="EnCour">En cours</option>
-                                        <option value="Terminer">Validé</option>
-                                        <option value="Annuler">Non validé</option>
+                                        <option value="EN_COURS">En cours</option>
+                                        <option value="TERMINE">Validé</option>
+                                        <option value="ANNULE">Non validé</option>
                                     </select>
                                 </td>
                                 <td>
